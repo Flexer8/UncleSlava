@@ -14,7 +14,7 @@ class Forecast:
     """
     def __init__(self):
         config = configparser.ConfigParser()
-        config.read("config/mainconfig.cfg")
+        config.read("/home/Flexer/UncleSlava/config/mainconfig.cfg")
         pendulum.set_formatter("alternative")
         self.forecast = pydarksky.DarkSky(config.get("keys", "DARK_SKY"))
         self.forecast.lang = "ru"
@@ -29,7 +29,7 @@ class Forecast:
         :type lat: double
         :param lon: долгота
         :type lon: double
-        :return: строку с данными о погоде на сегодня и завтра в заданных координатах
+        :return: list of str список данных о погоде в заданных координатах
         """
         weather = self.forecast.weather(lat, lon)
 
@@ -38,7 +38,7 @@ class Forecast:
             days.append(weather.daily[0])
             days.append(weather.daily[1])
 
-            data = ""
+            data = list()
 
             for day in days:
                 date = pendulum.from_timestamp(day.time, tz=weather.timezone)
@@ -47,7 +47,17 @@ class Forecast:
                     templ = day.temperatureLow
                     summary = day.summary
 
-                    data += "{}, днем: {}, ночью: {} {}\n".format(date.format("DD.MM.YY"), temph, templ, summary)
+                    if temph > 0:
+                        stemph = "+" + str(round(temph))
+                    else:
+                        stemph = str(round(temph))
+
+                    if templ > 0:
+                        stempl = "+" + str(round(templ))
+                    else:
+                        stempl = str(round(templ))
+
+                    data.append("Днем: {}, ночью: {} {}".format(stemph, stempl, summary))
                 except pydarksky.NoDataError:
                     data = "Для данной местности не удалось получить погодные данные"
 

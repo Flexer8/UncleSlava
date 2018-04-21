@@ -13,7 +13,7 @@ class Geolocation:
     """
     def __init__(self):
         config = configparser.ConfigParser()
-        config.read("config/mainconfig.cfg")
+        config.read("/home/Flexer/UncleSlava/config/mainconfig.cfg")
         key = config.get("keys", "GOOGLE_KEY")
         self.gmaps = googlemaps.Client(key=key)
 
